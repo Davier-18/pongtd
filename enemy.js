@@ -16,8 +16,8 @@ class Enemy {
     }
 
     if (this.type == "path") {
-      this.maxSpeed = 10;
-      this.tolerance = 50;
+      this.maxSpeed = 15;
+      this.tolerance = 55;
       this.r = 25;
       this.health = 10000;
       this.colour = color("blue"); // in case some error comes out if i dont give it a this.colour

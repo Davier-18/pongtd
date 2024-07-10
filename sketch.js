@@ -564,14 +564,14 @@ function notEnoughMoney() {
 }
 
 function generateWaypoints() {
-  let wpInterval = 40;
+  let wpInterval = 50;
   let sideBuffer = 70;
   let maxWp = (width - sideBuffer - sidebarW) / wpInterval;
   let wpHeights = [];
 
   for (let i = 0; i < maxWp; i++) {
     let x = (i * (width - sideBuffer - sidebarW)) / maxWp + sideBuffer;
-    let mappedNoise = map(noise(i * 0.3), 0, 1, -height * 0.3, height * 1.3);
+    let mappedNoise = map(noise(i * 0.4), 0, 1, -height * 0.3, height * 1.3);
     let y = constrain(mappedNoise, sideBuffer * 1.5, height - sideBuffer * 1.5);
 
     waypoints.push(new Waypoint(x, y));
