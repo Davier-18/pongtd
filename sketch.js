@@ -16,9 +16,10 @@ let enemies = [];
 
 let timeRoundStarted = 0;
 let timeElapsed = 0;
-let spawnDelay = 3000;
+let spawnDelay = 500;
 let roundStarted = false;
 let allSpawned = false;
+let timeAllSpawned = null;
 
 let pingVariables = [];
 let p1 = {
@@ -76,12 +77,8 @@ let ping5 = {
   allSpawned: false,
 };
 
-let base2Pings = 6;
-let max2Pings = 0;
-let pings2Generated = 0;
-
-let enemySpawnCooldown = 1;
 let round = 1;
+let roundShown = 1;
 
 let sidebarW = 140;
 let menuPadding = 10;
@@ -164,7 +161,7 @@ function setup() {
   startButton.style("height", "80px");
   startButton.style("font-size", "50px");
   startButton.position(width / 2 - 100, (height / 3) * 2 - 40);
-  startButton.class("start-button")
+  startButton.class("start-button");
 
   restartButton = createButton("Play Again");
   restartButton.style("width", "220px");
@@ -180,7 +177,7 @@ function setup() {
     returnToMenuButton.hide();
   });
   restartButton.hide();
-  restartButton.class("start-button")
+  restartButton.class("start-button");
 
   returnToMenuButton = createButton("Return to Menu");
   returnToMenuButton.style("width", "220px");
@@ -195,7 +192,7 @@ function setup() {
     returnToMenuButton.hide();
   });
   returnToMenuButton.hide();
-  returnToMenuButton.class("start-button")
+  returnToMenuButton.class("start-button");
 
   pingVariables.push(p1);
   pingVariables.push(p2);
@@ -224,17 +221,17 @@ function draw() {
     link.show();
 
     textAlign(CENTER, CENTER);
-    textFont(gagalin)
-    fill(255)
-    strokeWeight(8)
-    stroke(0)
-    
-    let pongTextSize = 100 + width/50
-    let tdTextSize = 40 + width/50
-    
-    textSize(pongTextSize)
+    textFont(gagalin);
+    fill(255);
+    strokeWeight(8);
+    stroke(0);
+
+    let pongTextSize = 100 + width / 50;
+    let tdTextSize = 40 + width / 50;
+
+    textSize(pongTextSize);
     text("Pong", width / 2, height / 3 - pongTextSize + 30);
-    textSize(tdTextSize)
+    textSize(tdTextSize);
     text("Tower Defence", width / 2, height / 3);
   } else if (state == 1) {
     // Put this in front so it will not cover others
@@ -315,6 +312,7 @@ function draw() {
         timeRoundStarted = millis();
         roundStarted = true;
         allSpawned = false;
+        timeAllSpawned = null;
 
         // THIS TOOK OVER AN HOUR TO FIX
         for (let i = 0; i < pingVariables.length; i++) {
@@ -325,6 +323,7 @@ function draw() {
 
         // Generating pings as ronud goes on
         if (timeElapsed >= spawnDelay) {
+          roundShown = round;
           for (let i = 0; i < pingVariables.length; i++) {
             let pingVar = pingVariables[i];
             // Generate pings
@@ -357,15 +356,21 @@ function draw() {
           // Check if all pings for that round has spawned
           allSpawned = pingVariables.every((pingVar) => pingVar.allSpawned);
 
-          // Check if round is over
-          if (allSpawned && enemies.length == 0) {
-            // Reset stuff
-            for (let i = 0; i < pingVariables.length; i++) {
-              pingVariables[i].generated = 0;
+          // Check if round is over - now a round is over when all pings are spawned
+          if (allSpawned) {
+            if (timeAllSpawned == null) {
+              timeAllSpawned = millis();
+            } else {
+              if (millis() - timeAllSpawned >= 5000) {
+                // Reset stuff
+                for (let i = 0; i < pingVariables.length; i++) {
+                  pingVariables[i].generated = 0;
+                }
+                round++;
+                roundStarted = false;
+                allSpawned = false;
+              }
             }
-            round++;
-            roundStarted = false;
-            allSpawned = false;
           }
         }
       }
@@ -385,16 +390,16 @@ function draw() {
             towers.splice(towers[towers.length - 1], 1);
 
             if (mode == "pongBear") {
-              pongBears.splice(pongBears.length - 1, 1)
+              pongBears.splice(pongBears.length - 1, 1);
             } else if (mode == "iceBear") {
-              iceBears.splice(iceBears.length - 1, 1)
+              iceBears.splice(iceBears.length - 1, 1);
             } else if (mode == "ninjaBear") {
-              ninjaBears.splice(ninjaBears.length - 1, 1)
+              ninjaBears.splice(ninjaBears.length - 1, 1);
             } else if (mode == "bearCave") {
-              bearCaves.splice(bearCaves.length - 1, 1)
+              bearCaves.splice(bearCaves.length - 1, 1);
             }
 
-            mode = "mouse"
+            mode = "mouse";
           }
         }
       }
@@ -402,10 +407,10 @@ function draw() {
       for (let enemy of enemies) {
         enemy.updateType();
         enemy.checkPonged();
-        
+
         enemy.gotoWp(paths[enemy.wpNumber]);
         enemy.checkWp(paths[enemy.wpNumber], paths);
-        
+
         enemy.update();
         enemy.show();
       }
@@ -485,16 +490,16 @@ function draw() {
         }
       }
 
-      textFont(chewy)
+      textFont(chewy);
       fill("rgb(122,103,60)");
-      textSize(20 + width/120);
+      textSize(20 + width / 120);
       textAlign(CENTER, TOP);
       stroke(255);
       strokeWeight(2);
       text("$" + money, width / 2, 20);
 
       textAlign(LEFT, TOP);
-      let roundText = "Round: " + round;
+      let roundText = "Round: " + roundShown;
       text(roundText, 20, 20);
 
       text("Health: " + health, 20 + textWidth(roundText) + 30, 20);
@@ -565,18 +570,18 @@ function draw() {
     health = 200;
 
     textAlign(CENTER, CENTER);
-    
+
     fill("rgb(122,103,60)");
-    stroke(255)
-    strokeWeight(8)
-    textFont(gagalin)
-    
-    let gameOverSize = 70 + width/50
+    stroke(255);
+    strokeWeight(8);
+    textFont(gagalin);
+
+    let gameOverSize = 70 + width / 50;
     textSize(gameOverSize);
     text("Game Over!", width / 2, height / 3);
-    
-    textFont(chewy)
-    textSize(20 + width/50);
+
+    textFont(chewy);
+    textSize(20 + width / 50);
     text(
       "You ponged " + killed + " pings!",
       width / 2,
@@ -625,28 +630,28 @@ function mouseClicked() {
 
   if (mode == "pongBear") {
     if (pongBears[pongBears.length - 1].canPlace == true) {
-      placeSound.play()
+      placeSound.play();
       pongBears[pongBears.length - 1].mode = "tower";
       money -= pbPrice;
       mode = "mouse";
     }
   } else if (mode == "iceBear") {
     if (iceBears[iceBears.length - 1].canPlace == true) {
-      placeSound.play()
+      placeSound.play();
       iceBears[iceBears.length - 1].mode = "tower";
       money -= ibPrice;
       mode = "mouse";
     }
   } else if (mode == "ninjaBear") {
     if (ninjaBears[ninjaBears.length - 1].canPlace == true) {
-      placeSound.play()
+      placeSound.play();
       ninjaBears[ninjaBears.length - 1].mode = "tower";
       money -= nbPrice;
       mode = "mouse";
     }
   } else if (mode == "bearCave") {
     if (bearCaves[bearCaves.length - 1].canPlace == true) {
-      placeSound.play()
+      placeSound.play();
       bearCaves[bearCaves.length - 1].mode = "tower";
       money -= bcPrice;
       mode = "mouse";
@@ -773,19 +778,19 @@ function changeUgButtons(tower) {
     <div class="upgrade-button-desc">${ug3Desc}</div>
 <div>
   `);
-  
+
   if (tower.ug1Level >= 2) {
     upgrade1.class("upgrade-button-maxed");
   } else {
     upgrade1.class("upgrade-button");
   }
-  
+
   if (tower.ug2Level >= 2) {
     upgrade2.class("upgrade-button-maxed");
   } else {
     upgrade2.class("upgrade-button");
   }
-  
+
   if (tower.ug3Level >= 2) {
     upgrade3.class("upgrade-button-maxed");
   } else {
@@ -814,17 +819,17 @@ function towerMenu() {
   line(width - sidebarW, 0, width - sidebarW, height);
 
   // Actual menu stuff
-  
+
   // bear name
-  textFont(gagalin)
-  textSize(towerMenuW/7);
+  textFont(gagalin);
+  textSize(towerMenuW / 7);
   fill(255);
-  stroke(0)
-  strokeWeight(5)
+  stroke(0);
+  strokeWeight(5);
   textAlign(CENTER, TOP);
-  
+
   let bearName;
-  
+
   if (towerMenuOpened.type == "pongBear") {
     bearName = "Pong Bear";
   } else if (towerMenuOpened.type == "iceBear") {
@@ -834,8 +839,8 @@ function towerMenu() {
   } else if (towerMenuOpened.type == "bearCave") {
     bearName = "Bear Cave";
   }
-  
-  text(bearName, width - sidebarW - towerMenuW/2, menuPadding * 2.5)
+
+  text(bearName, width - sidebarW - towerMenuW / 2, menuPadding * 2.5);
 
   // bear image
   let pfp;
@@ -856,12 +861,12 @@ function towerMenu() {
     towerPicH
   );
 
-  textFont(chewy)
+  textFont(chewy);
   textAlign(LEFT, TOP);
-  textSize(towerMenuW/12);
+  textSize(towerMenuW / 12);
   fill(255);
-  stroke(0)
-  strokeWeight(1)
+  stroke(0);
+  strokeWeight(1);
 
   text(
     "Atk Cooldown: " + towerMenuOpened.attackSpeed + " ms",
