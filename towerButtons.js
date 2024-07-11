@@ -11,8 +11,7 @@ function createTowerButtons() {
         let pongBear = new PongBear(mouseX, mouseY);
         pongBears.push(pongBear);
         towers.push(pongBear);
-
-        money -= pbPrice;
+        mouseOutOfMenu = false
       } else {
         notEnoughMoney();
       }
@@ -33,8 +32,7 @@ function createTowerButtons() {
         let iceBear = new IceBear(mouseX, mouseY);
         iceBears.push(iceBear);
         towers.push(iceBear);
-
-        money -= ibPrice;
+        mouseOutOfMenu = false
       } else {
         notEnoughMoney();
       }
@@ -60,8 +58,7 @@ function createTowerButtons() {
         let ninjaBear = new NinjaBear(mouseX, mouseY);
         ninjaBears.push(ninjaBear);
         towers.push(ninjaBear);
-
-        money -= nbPrice;
+        mouseOutOfMenu = false
       } else {
         notEnoughMoney();
       }
@@ -84,8 +81,7 @@ function createTowerButtons() {
         let bearCave = new BearCave(mouseX, mouseY);
         bearCaves.push(bearCave);
         towers.push(bearCave);
-
-        money -= bcPrice;
+        mouseOutOfMenu = false
       } else {
         notEnoughMoney();
       }

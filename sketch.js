@@ -90,6 +90,8 @@ let menuH = 0;
 
 let mode = "mouse";
 
+let mouseOutOfMenu = false;
+
 let towerButtonW = 110;
 
 let towers = [];
@@ -368,6 +370,35 @@ function draw() {
         }
       }
 
+      if (mode != "mouse") {
+        // user has clikced a tower button
+        if (!mouseOutOfMenu) {
+          // mouse is still within tower menu
+          if (mouseX < width - sidebarW) {
+            mouseOutOfMenu = true;
+          }
+        } else if (mouseOutOfMenu) {
+          // mouse left tower menu
+          if (mouseX > width - sidebarW) {
+            // mouse left tower menu but came back
+            // cancel placing
+            towers.splice(towers[towers.length - 1], 1);
+
+            if (mode == "pongBear") {
+              pongBears.splice(pongBears.length - 1, 1)
+            } else if (mode == "iceBear") {
+              iceBears.splice(iceBears.length - 1, 1)
+            } else if (mode == "ninjaBear") {
+              ninjaBears.splice(ninjaBears.length - 1, 1)
+            } else if (mode == "bearCave") {
+              bearCaves.splice(bearCaves.length - 1, 1)
+            }
+
+            mode = "mouse"
+          }
+        }
+      }
+
       for (let enemy of enemies) {
         enemy.updateType();
         enemy.checkPonged();
@@ -596,24 +627,28 @@ function mouseClicked() {
     if (pongBears[pongBears.length - 1].canPlace == true) {
       placeSound.play()
       pongBears[pongBears.length - 1].mode = "tower";
+      money -= pbPrice;
       mode = "mouse";
     }
   } else if (mode == "iceBear") {
     if (iceBears[iceBears.length - 1].canPlace == true) {
       placeSound.play()
       iceBears[iceBears.length - 1].mode = "tower";
+      money -= ibPrice;
       mode = "mouse";
     }
   } else if (mode == "ninjaBear") {
     if (ninjaBears[ninjaBears.length - 1].canPlace == true) {
       placeSound.play()
       ninjaBears[ninjaBears.length - 1].mode = "tower";
+      money -= nbPrice;
       mode = "mouse";
     }
   } else if (mode == "bearCave") {
     if (bearCaves[bearCaves.length - 1].canPlace == true) {
       placeSound.play()
       bearCaves[bearCaves.length - 1].mode = "tower";
+      money -= bcPrice;
       mode = "mouse";
     }
   } else if (mode == "mouse") {
