@@ -11,6 +11,7 @@ class PongText {
     // stroke(0)
     // strokeWeight(1)
     noStroke()
+    textFont(chewy)
     text("Pong!", this.pos.x, this.pos.y);
   }
 

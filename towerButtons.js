@@ -88,6 +88,4 @@ function createTowerButtons() {
     }
   });
   bearCaveButton.hide();
-
-  pongBearButton.class("tower-button");
 }

@@ -25,12 +25,6 @@ function createTowerMenuButtons() {
 
       money -= price;
     }
-
-    if (towerMenuOpened.ug1Level >= 2) {
-      upgrade1.class("upgrade-button-maxed");
-    } else {
-      upgrade1.class("upgrade-button");
-    }
   });
   upgrade1.hide();
 

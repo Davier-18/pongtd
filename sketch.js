@@ -81,6 +81,7 @@ let round = 1;
 let roundShown = 1;
 
 let sidebarW = 140;
+let currSidebarPos = 0;
 let menuPadding = 10;
 let menuW = sidebarW - menuPadding * 2;
 let menuH = 0;
@@ -241,10 +242,6 @@ function draw() {
       circle(path.x, path.y, pathThickness);
     }
 
-    fill("rgb(155,136,93)");
-    noStroke();
-    rect(width - sidebarW, 0, sidebarW, height);
-
     if (!pathCompleted) {
       //pathCreator.show();
       pathCreator.update();
@@ -260,6 +257,15 @@ function draw() {
         //timeRoundStarted = millis();
         p1.lastGen = millis();
       }
+
+      if (currSidebarPos < sidebarW) {
+        currSidebarPos += (sidebarW - currSidebarPos) * 0.07;
+      } else {
+        currSidebarPos = sidebarW;
+      }
+      fill("rgb(155,136,93)");
+      noStroke();
+      rect(width - currSidebarPos, 0, sidebarW, height);
     } else if (pathCompleted) {
       if (!roundStarted) {
         // in between rounds
@@ -361,7 +367,7 @@ function draw() {
             if (timeAllSpawned == null) {
               timeAllSpawned = millis();
             } else {
-              if (millis() - timeAllSpawned >= 5000) {
+              if (millis() - timeAllSpawned >= 8000) {
                 // Reset stuff
                 for (let i = 0; i < pingVariables.length; i++) {
                   pingVariables[i].generated = 0;
@@ -419,6 +425,7 @@ function draw() {
         if (enemies[i].completedPath(paths)) {
           if (health > 0) {
             health -= enemies[i].damage;
+            healthLost();
           } else {
             state = 2;
           }
@@ -519,6 +526,62 @@ function draw() {
       iceBearButton.show();
       ninjaBearButton.show();
       bearCaveButton.show();
+
+      if (money >= pbPrice) {
+        pongBearButton.class("tower-button");
+      } else {
+        pongBearButton.class("tower-button-disabled");
+      }
+
+      if (money >= ibPrice) {
+        iceBearButton.class("tower-button");
+      } else {
+        iceBearButton.class("tower-button-disabled");
+      }
+
+      if (money >= nbPrice) {
+        ninjaBearButton.class("tower-button");
+      } else {
+        ninjaBearButton.class("tower-button-disabled");
+      }
+
+      if (money >= bcPrice) {
+        bearCaveButton.class("tower-button");
+      } else {
+        bearCaveButton.class("tower-button-disabled");
+      }
+
+      if (towerMenuOpened != "none") {
+        if (money >= towerMenuOpened.ug1Price[towerMenuOpened.ug1Level]) {
+          if (towerMenuOpened.ug1Level >= 2) {
+            upgrade1.class("upgrade-button-maxed");
+          } else {
+            upgrade1.class("upgrade-button");
+          }
+        } else {
+          upgrade1.class("upgrade-button-disabled");
+        }
+
+        if (money >= towerMenuOpened.ug2Price[towerMenuOpened.ug2Level]) {
+          if (towerMenuOpened.ug2Level >= 2) {
+            upgrade2.class("upgrade-button-maxed");
+          } else {
+            upgrade2.class("upgrade-button");
+          }
+        } else {
+          upgrade2.class("upgrade-button-disabled");
+        }
+
+        if (money >= towerMenuOpened.ug3Price[towerMenuOpened.ug3Level]) {
+          if (towerMenuOpened.ug3Level >= 2) {
+            upgrade3.class("upgrade-button-maxed");
+          } else {
+            upgrade3.class("upgrade-button");
+          }
+        } else {
+          upgrade3.class("upgrade-button-disabled");
+        }
+      }
 
       // Placing should be after tower menu so we can see the dude after the button is clicked
       if (mode == "pongBear") {
@@ -879,3 +942,5 @@ function towerMenu() {
     towerPicH + 20
   );
 }
+
+function healthLost() {}
