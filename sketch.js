@@ -196,7 +196,7 @@ function setup() {
     pathCreator = new Enemy(startPos.x, startPos.y, "path");
     restartButton.hide();
     returnToMenuButton.hide();
-    gamePageMusic.stop()
+    gamePageMusic.stop();
     gamePageMusic.loop();
     gamePageMusic.setVolume(0.05);
   });
@@ -214,9 +214,9 @@ function setup() {
     state = 0;
     restartButton.hide();
     returnToMenuButton.hide();
-    gamePageMusic.stop()
+    gamePageMusic.stop();
     landingPageMusic.loop();
-    landingPageMusic.setVolume(0.04);
+    landingPageMusic.setVolume(0.05);
   });
   returnToMenuButton.hide();
   returnToMenuButton.class("start-button");
@@ -241,7 +241,7 @@ function setup() {
   gravity = createVector(0, 1);
 
   landingPageMusic.loop();
-  landingPageMusic.setVolume(0.04);
+  landingPageMusic.setVolume(0.05);
 }
 
 function draw() {
@@ -794,6 +794,10 @@ function draw() {
     pongID = 0;
     money = 100;
     health = 200;
+    towerMenuCloseButton.hide();
+    upgrade1.hide();
+    upgrade2.hide();
+    upgrade3.hide();
 
     textAlign(CENTER, CENTER);
 
