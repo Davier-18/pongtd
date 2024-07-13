@@ -142,6 +142,8 @@ let pongTexts = [];
 let pingTowerW = 150;
 let pingTowerH = (pingTowerW / 9) * 16;
 
+let pings = [];
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   menuH = height - menuPadding * 2;
@@ -228,7 +230,6 @@ function draw() {
     strokeWeight(8);
     stroke(255);
     fill("rgb(122,103,60)");
-
 
     let pongTextSize = 100 + width / 50;
     let tdTextSize = 40 + width / 50;
@@ -351,8 +352,13 @@ function draw() {
               pingVar.canGen &&
               timeElapsed >= pingVar.genDelay
             ) {
-              let enemy = new Enemy(startPos.x, startPos.y, i + 1);
-              enemies.push(enemy);
+              // Actually generate enemies here
+
+              // let enemy = new Enemy(startPos.x, startPos.y, i + 1);
+              // enemies.push(enemy);
+
+              let ping = new Ping(i + 1);
+              pings.push(ping);
               pingVar.generated++;
               pingVar.lastGen = millis();
             }
@@ -395,6 +401,7 @@ function draw() {
         }
       }
 
+      // Tower placing stuff
       if (mode != "mouse") {
         // user has clikced a tower button
         if (!mouseOutOfMenu) {
@@ -421,6 +428,20 @@ function draw() {
 
             mode = "mouse";
           }
+        }
+      }
+
+      for (let ping of pings) {
+        ping.show();
+        ping.update();
+      }
+
+      for (let i = pings.length - 1; i >= 0; i--) {
+        if (pings[i].checkReached()) {
+          let enemy = new Enemy(startPos.x, startPos.y, pings[i].type);
+          enemies.push(enemy);
+
+          pings.splice(i, 1);
         }
       }
 
@@ -672,8 +693,7 @@ function draw() {
   // }
 }
 
-function notEnoughMoney() {
-}
+function notEnoughMoney() {}
 
 function generateWaypoints() {
   let wpInterval = 50;

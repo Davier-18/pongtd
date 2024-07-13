@@ -70,6 +70,8 @@ class Enemy {
 
   show() {
     fill(this.colour);
+    stroke(255)
+    strokeWeight(1)
     circle(this.pos.x, this.pos.y, this.r * 2);
     fill(255);
     textSize(15);
