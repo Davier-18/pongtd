@@ -28,4 +28,7 @@ function preload() {
     gagalin = loadFont("/assets/fonts/Gagalin-Regular.otf")
 
     pingTower = loadImage("/assets/pingTower.png")
+
+    landingPageMusic = loadSound("/assets/music/landingPage.mp3");
+    gamePageMusic = loadSound("/assets/music/gamePage.mp3")
   }

@@ -173,6 +173,10 @@ function setup() {
     pathCreator = new Enemy(startPos.x, startPos.y, "path");
     startButton.hide();
     link.hide();
+
+    landingPageMusic.stop();
+    gamePageMusic.loop();
+    gamePageMusic.setVolume(0.05);
   });
   startButton.style("width", "200px");
   startButton.style("height", "80px");
@@ -192,6 +196,9 @@ function setup() {
     pathCreator = new Enemy(startPos.x, startPos.y, "path");
     restartButton.hide();
     returnToMenuButton.hide();
+    gamePageMusic.stop()
+    gamePageMusic.loop();
+    gamePageMusic.setVolume(0.05);
   });
   restartButton.hide();
   restartButton.class("start-button");
@@ -207,6 +214,9 @@ function setup() {
     state = 0;
     restartButton.hide();
     returnToMenuButton.hide();
+    gamePageMusic.stop()
+    landingPageMusic.loop();
+    landingPageMusic.setVolume(0.05);
   });
   returnToMenuButton.hide();
   returnToMenuButton.class("start-button");
@@ -229,6 +239,9 @@ function setup() {
   link.hide();
 
   gravity = createVector(0, 1);
+
+  landingPageMusic.loop();
+  landingPageMusic.setVolume(0.05);
 }
 
 function draw() {
