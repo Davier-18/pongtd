@@ -682,6 +682,7 @@ function draw() {
       } else {
         text(roundText, width - sidebarW - 20 - towerMenuW, 20);
       }
+      
 
       // Tower menu
       // menu after the tower stuff so it covers the towers
