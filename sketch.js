@@ -676,7 +676,12 @@ function draw() {
       // Texts in the top right
       textAlign(RIGHT, TOP);
       let roundText = "Round: " + roundShown;
-      text(roundText, width - sidebarW - 20, 20);
+
+      if (towerMenuOpened == "none") {
+        text(roundText, width - sidebarW - 20, 20);
+      } else {
+        text(roundText, width - sidebarW - 20 - towerMenuW, 20);
+      }
 
       // Tower menu
       // menu after the tower stuff so it covers the towers
