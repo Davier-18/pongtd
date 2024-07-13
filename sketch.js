@@ -143,6 +143,15 @@ let pingTowerW = 150;
 let pingTowerH = (pingTowerW / 9) * 16;
 
 let pings = [];
+let pingMsgW = 300;
+let pingMsgH = 50;
+
+let randomName = "";
+let randomHint = "This is the best TD game ever!"
+let hintGenerated = false;
+let lastPing = 0;
+let pingIconR = 10;
+let currPingType = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -361,6 +370,11 @@ function draw() {
               pings.push(ping);
               pingVar.generated++;
               pingVar.lastGen = millis();
+
+              // name for the ping text
+              randomName = random(names);
+              lastPing = millis();
+              currPingType = i + 1;
             }
 
             // Check pings' generation cooldown
@@ -383,6 +397,10 @@ function draw() {
 
           // Check if round is over - now a round is over when all pings are spawned
           if (allSpawned) {
+            if (!hintGenerated) {
+              randomHint = random(hints)
+              hintGenerated = true;
+            }
             if (timeAllSpawned == null) {
               timeAllSpawned = millis();
             } else {
@@ -395,6 +413,7 @@ function draw() {
                 roundStarted = false;
                 allSpawned = false;
                 currSidebarPos = 0;
+                hintGenerated = false;
               }
             }
           }
@@ -532,19 +551,103 @@ function draw() {
         }
       }
 
+      // Ping messages
+      if (millis() - lastPing >= 2500) {
+        randomName = "";
+        currPingType = 0;
+      }
+
+      // put this in front to calculate its textWidth()
+      let pingType = "";
+      let pingColour = color(0);
+      if (currPingType == 1) {
+        pingColour = color("red");
+        pingType = "Normal";
+      } else if (currPingType == 2) {
+        pingColour = color("blue");
+        pingType = "Good Internet";
+      } else if (currPingType == 3) {
+        pingColour = color("rgb(0,213,28)");
+        pingType = "Clustered";
+      } else if (currPingType == 4) {
+        pingColour = color(0);
+        pingType = "VIP";
+      } else if (currPingType == 5) {
+        pingColour = color("rgb(156,0,156)");
+        pingType = "Office";
+      }
+
+      let pingText = "";
+      if (randomName == "") {
+        pingText = "Hint: " + randomHint;
+      } else {
+        pingText = `${pingType} Ping from ${randomName} incoming!`;
+      }
+
+      // Ping icon stuff
+      if (currPingType != 0) {
+        // Background rectangle
+        fill("rgb(155,136,93)");
+        stroke(255);
+        strokeWeight(1);
+        textSize(20);
+        rect(
+          10,
+          10,
+          25 + pingIconR * 2 + textWidth(pingText) + 20,
+          pingMsgH,
+          10
+        );
+
+        noStroke();
+        fill(pingColour);
+        circle(25 + pingIconR, 10 + pingMsgH / 2, pingIconR * 2);
+
+        // ping texts
+        stroke(0);
+        fill(255);
+        textAlign(LEFT, CENTER);
+        textSize(20);
+        textFont(chewy);
+        text(pingText, 25 + pingIconR + 20, 7 + pingMsgH / 2);
+      } else {
+        // Background rectangle
+        fill("rgb(155,136,93)");
+        stroke(255);
+        strokeWeight(1);
+        textSize(20);
+        rect(
+          10,
+          10,
+          20 + textWidth(pingText) + 20,
+          pingMsgH,
+          10
+        );
+
+        stroke(0);
+        fill(255);
+        textAlign(LEFT, CENTER);
+        textSize(20);
+        textFont(chewy);
+        text(pingText, 25, 7 + pingMsgH / 2);
+      }
+
+      // Player stats stuff
       textFont(chewy);
       fill("rgb(122,103,60)");
       textSize(20 + width / 120);
-      textAlign(CENTER, TOP);
       stroke(255);
       strokeWeight(2);
-      text("$" + money, width / 2, 20);
 
-      textAlign(LEFT, TOP);
+      // Texts in the centre of screen
+      textAlign(CENTER, TOP);
+      let moneyHealthText = "$" + money + "    Health: " + health;
+      text(moneyHealthText, (width - sidebarW) / 2, 20);
+
+      // Texts in the top right
+      textAlign(RIGHT, TOP);
       let roundText = "Round: " + roundShown;
-      text(roundText, 20, 20);
-
-      text("Health: " + health, 20 + textWidth(roundText) + 30, 20);
+      text(roundText, width - sidebarW - 20, 20);
 
       // Tower menu
       // menu after the tower stuff so it covers the towers
