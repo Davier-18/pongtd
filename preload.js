@@ -26,4 +26,6 @@ function preload() {
     
     chewy = loadFont("/assets/fonts/Chewy-Regular.ttf")
     gagalin = loadFont("/assets/fonts/Gagalin-Regular.otf")
+
+    pingTower = loadImage("/assets/pingTower.png")
   }

@@ -139,14 +139,15 @@ let restartButton, returnToMenuButton;
 
 let pongTexts = [];
 
+let pingTowerW = 150;
+let pingTowerH = (pingTowerW / 9) * 16;
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   menuH = height - menuPadding * 2;
 
   startPos = createVector(0, 0);
   endPos = createVector(0, 0);
-
-  pathCreator = new Enemy(-pathThickness, startPos.y, "path");
 
   createTowerButtons();
   createTowerMenuButtons();
@@ -155,6 +156,7 @@ function setup() {
   startButton.mouseClicked(() => {
     state = 1;
     generateWaypoints();
+    pathCreator = new Enemy(startPos.x, startPos.y, "path");
     startButton.hide();
     link.hide();
   });
@@ -170,10 +172,10 @@ function setup() {
   restartButton.style("font-size", "25px");
   restartButton.position(width / 2 - 110, (height / 3) * 2 - 30);
   restartButton.mouseClicked(() => {
-    pathCreator = new Enemy(-pathThickness, startPos.y, "path");
     killed = 0;
     state = 1;
     generateWaypoints();
+    pathCreator = new Enemy(startPos.x, startPos.y, "path");
     restartButton.hide();
     returnToMenuButton.hide();
   });
@@ -223,9 +225,10 @@ function draw() {
 
     textAlign(CENTER, CENTER);
     textFont(gagalin);
-    fill(255);
     strokeWeight(8);
-    stroke(0);
+    stroke(255);
+    fill("rgb(122,103,60)");
+
 
     let pongTextSize = 100 + width / 50;
     let tdTextSize = 40 + width / 50;
@@ -241,6 +244,15 @@ function draw() {
       noStroke();
       circle(path.x, path.y, pathThickness);
     }
+
+    // Ping tower
+    image(
+      pingTower,
+      20 + 9,
+      startPos.y - pingTowerH + 32,
+      pingTowerW,
+      pingTowerH
+    );
 
     if (!pathCompleted) {
       //pathCreator.show();
@@ -258,6 +270,7 @@ function draw() {
         p1.lastGen = millis();
       }
 
+      // Sidebar animation
       if (currSidebarPos < sidebarW) {
         currSidebarPos += (sidebarW - currSidebarPos) * 0.07;
       } else {
@@ -338,7 +351,7 @@ function draw() {
               pingVar.canGen &&
               timeElapsed >= pingVar.genDelay
             ) {
-              let enemy = new Enemy(-pathThickness, startPos.y, i + 1);
+              let enemy = new Enemy(startPos.x, startPos.y, i + 1);
               enemies.push(enemy);
               pingVar.generated++;
               pingVar.lastGen = millis();
@@ -375,6 +388,7 @@ function draw() {
                 round++;
                 roundStarted = false;
                 allSpawned = false;
+                currSidebarPos = 0;
               }
             }
           }
@@ -659,19 +673,30 @@ function draw() {
 }
 
 function notEnoughMoney() {
-  console.log("hello");
 }
 
 function generateWaypoints() {
   let wpInterval = 50;
   let sideBuffer = 70;
-  let maxWp = (width - sideBuffer - sidebarW) / wpInterval;
+  let maxWp = (width - sidebarW - pingTowerW / 2 - 20) / wpInterval;
   let wpHeights = [];
 
+  let randomAmt = random(100, 140);
+
   for (let i = 0; i < maxWp; i++) {
-    let x = (i * (width - sideBuffer - sidebarW)) / maxWp + sideBuffer;
-    let mappedNoise = map(noise(i * 0.4), 0, 1, -height * 0.3, height * 1.3);
-    let y = constrain(mappedNoise, sideBuffer * 1.5, height - sideBuffer * 1.5);
+    let x =
+      (i * (width - sidebarW - pingTowerW / 2 - 20)) / maxWp +
+      pingTowerW / 2 +
+      20;
+    let mappedNoise = map(noise(i * 0.3), 0, 1, -height * 0.3, height * 1.3);
+    let y = 0;
+
+    if (i == 0) {
+      // Make sure the whole tower can fit
+      y = constrain(mappedNoise, pingTowerH * 1.3, height - sideBuffer * 2);
+    } else {
+      y = constrain(mappedNoise, sideBuffer * 2, height - sideBuffer * 2);
+    }
 
     waypoints.push(new Waypoint(x, y));
     wpHeights.push(y);
@@ -680,6 +705,18 @@ function generateWaypoints() {
   let finalWpX = waypoints[waypoints.length - 1].pos.x + pathThickness * 1.5;
   let finalWpY = waypoints[waypoints.length - 1].pos.y;
   waypoints.push(new Waypoint(finalWpX, finalWpY));
+
+  // Change second waypoint so the path always starts by going dowwards
+  if (waypoints[0].pos.y > height - randomAmt - sideBuffer * 2) {
+    waypoints[0].pos.y -= randomAmt;
+  }
+
+  waypoints[1].pos.y = waypoints[0].pos.y + randomAmt;
+  waypoints[1].pos.y = constrain(
+    waypoints[1].pos.y,
+    sideBuffer * 2,
+    height - sideBuffer * 2
+  );
 
   startPos.x = waypoints[0].pos.x;
   startPos.y = waypoints[0].pos.y;
