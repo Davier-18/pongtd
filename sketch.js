@@ -509,6 +509,10 @@ function draw() {
         }
       }
 
+      if (health <= 0) {
+        state = 2;
+      }
+
       for (let pongBear of pongBears) {
         if (pongBear.mode == "tower") {
           pongBear.show();
