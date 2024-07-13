@@ -147,11 +147,14 @@ let pingMsgW = 300;
 let pingMsgH = 50;
 
 let randomName = "";
-let randomHint = "This is the best TD game ever!"
+let randomHint = "This is the best TD game ever!";
 let hintGenerated = false;
 let lastPing = 0;
 let pingIconR = 10;
 let currPingType = 0;
+
+let gravity;
+let particles = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -224,6 +227,8 @@ function setup() {
     (height / 3) * 2 + 30 + 15
   );
   link.hide();
+
+  gravity = createVector(0, 1);
 }
 
 function draw() {
@@ -398,7 +403,7 @@ function draw() {
           // Check if round is over - now a round is over when all pings are spawned
           if (allSpawned) {
             if (!hintGenerated) {
-              randomHint = random(hints)
+              randomHint = random(hints);
               hintGenerated = true;
             }
             if (timeAllSpawned == null) {
@@ -551,6 +556,19 @@ function draw() {
         }
       }
 
+      // Particles
+      for (let ball of particles) {
+        ball.applyForce(gravity);
+        ball.show();
+        ball.update();
+      }
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        if (particles[i].checkOut()) {
+          particles.splice(i, 1);
+        }
+      }
+
       // Ping messages
       if (millis() - lastPing >= 2500) {
         randomName = "";
@@ -616,13 +634,7 @@ function draw() {
         stroke(255);
         strokeWeight(1);
         textSize(20);
-        rect(
-          10,
-          10,
-          20 + textWidth(pingText) + 20,
-          pingMsgH,
-          10
-        );
+        rect(10, 10, 20 + textWidth(pingText) + 20, pingMsgH, 10);
 
         stroke(0);
         fill(255);
@@ -857,6 +869,7 @@ function mouseClicked() {
       pongBears[pongBears.length - 1].mode = "tower";
       money -= pbPrice;
       mode = "mouse";
+      genParticles(pongBears[pongBears.length - 1]);
     }
   } else if (mode == "iceBear") {
     if (iceBears[iceBears.length - 1].canPlace == true) {
@@ -864,6 +877,7 @@ function mouseClicked() {
       iceBears[iceBears.length - 1].mode = "tower";
       money -= ibPrice;
       mode = "mouse";
+      genParticles(iceBears[iceBears.length - 1]);
     }
   } else if (mode == "ninjaBear") {
     if (ninjaBears[ninjaBears.length - 1].canPlace == true) {
@@ -871,6 +885,7 @@ function mouseClicked() {
       ninjaBears[ninjaBears.length - 1].mode = "tower";
       money -= nbPrice;
       mode = "mouse";
+      genParticles(ninjaBears[ninjaBears.length - 1]);
     }
   } else if (mode == "bearCave") {
     if (bearCaves[bearCaves.length - 1].canPlace == true) {
@@ -878,6 +893,7 @@ function mouseClicked() {
       bearCaves[bearCaves.length - 1].mode = "tower";
       money -= bcPrice;
       mode = "mouse";
+      genParticles(bearCaves[bearCaves.length - 1]);
     }
   } else if (mode == "mouse") {
     for (let pongBear of pongBears) {

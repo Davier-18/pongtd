@@ -15,14 +15,13 @@ function createTowerMenuButtons() {
     width - sidebarW - towerMenuW + (towerMenuW - ugButtonW) / 2,
     towerPicH + menuPadding + 50
   );
-  
   upgrade1.mouseClicked(() => {
     let price = towerMenuOpened.ug1Price[towerMenuOpened.ug1Level];
 
     if (towerMenuOpened.ug1Level < 2 && money >= price) {
       towerMenuOpened.ug1Level += 1;
       changeUgButtons(towerMenuOpened);
-
+      genParticles(towerMenuOpened);
       money -= price;
     }
   });
@@ -40,7 +39,7 @@ function createTowerMenuButtons() {
     if (towerMenuOpened.ug2Level < 2 && money >= price) {
       towerMenuOpened.ug2Level += 1;
       changeUgButtons(towerMenuOpened);
-
+      genParticles(towerMenuOpened);
       money -= price;
     }
 
@@ -64,7 +63,7 @@ function createTowerMenuButtons() {
     if (towerMenuOpened.ug3Level < 2 && money >= price) {
       towerMenuOpened.ug3Level += 1;
       changeUgButtons(towerMenuOpened);
-
+      genParticles(towerMenuOpened);
       money -= price;
     }
 
@@ -79,4 +78,21 @@ function createTowerMenuButtons() {
   upgrade1.class("upgrade-button");
   upgrade2.class("upgrade-button");
   upgrade3.class("upgrade-button");
+}
+
+function genParticles(target) {
+  for (let i = 0; i < random(10, 20); i++) {
+    let colour = color(255,217,111);
+
+    let ball = new Particle(
+      target.pos.x,
+      target.pos.y,
+      colour
+    );
+
+    ball.vel.y = random(-10, -15);
+    ball.vel.x = random(-8, 8);
+    ball.r = random(4, 6);
+    particles.push(ball);
+  }
 }
