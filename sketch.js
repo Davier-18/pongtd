@@ -216,7 +216,7 @@ function setup() {
     returnToMenuButton.hide();
     gamePageMusic.stop()
     landingPageMusic.loop();
-    landingPageMusic.setVolume(0.05);
+    landingPageMusic.setVolume(0.04);
   });
   returnToMenuButton.hide();
   returnToMenuButton.class("start-button");
@@ -241,7 +241,7 @@ function setup() {
   gravity = createVector(0, 1);
 
   landingPageMusic.loop();
-  landingPageMusic.setVolume(0.05);
+  landingPageMusic.setVolume(0.04);
 }
 
 function draw() {

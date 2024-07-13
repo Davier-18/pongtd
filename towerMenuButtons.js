@@ -82,7 +82,7 @@ function createTowerMenuButtons() {
 
 function genParticles(target) {
   for (let i = 0; i < random(10, 20); i++) {
-    let colour = color(255,217,111);
+    let colour = color(244, 252, 3);
 
     let ball = new Particle(
       target.pos.x,
